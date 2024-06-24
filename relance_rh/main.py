@@ -1,22 +1,25 @@
 import os
 import sys
 import json
+import logging
 from relance_rh.ui import Visuel
+from relance_rh.create_database import init_db
+from relance_rh.database import Database
 
-# https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
-def resource_path(relative_path):
-	""" Get absolute path to resource, works for dev and for PyInstaller """
-	try:
-		# PyInstaller creates a temp folder and stores path in _MEIPASS
-		base_path = sys._MEIPASS
-	except Exception:
-		base_path = os.path.abspath(".")
+log_file = os.path.join(os.path.dirname(__file__), "logs", "log.log")
+logging.basicConfig(
+    filename=log_file,
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
-	return os.path.join(base_path, relative_path)
-
+logging.info("Starting the application")
 
 
 def main():
+	init_db()
+	new_db = Database()
+
 	ui = Visuel()
 	ui.find_folder_widget()
 

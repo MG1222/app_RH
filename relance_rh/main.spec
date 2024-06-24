@@ -10,7 +10,7 @@ a = Analysis(
     binaries=[],
     datas=[
             ('./asset/logo.png', 'asset'),
-            ('./config/config_dev.json', 'config'),
+            ('./config/config.json', 'config'),
     ],
     hiddenimports=[
                     'relance_rh.excel_operations',

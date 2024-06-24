@@ -1,10 +1,12 @@
 import os
 import re
 import random
+import logging
 from dateutil.relativedelta import relativedelta
 from openpyxl import load_workbook, Workbook
 from datetime import datetime
-from relance_rh.mail_sender_dev import MailSender
+from relance_rh.mail_sender import MailSender
+from relance_rh.database import Database
 
 
 class ExcelOperations:
@@ -64,9 +66,11 @@ class ExcelOperations:
         # format num
         tel_num = re.sub(r'\D', '', tel_num)
         tel_num = ' '.join([tel_num[i:i + 2] for i in range(0, len(tel_num), 2)])
+        print(file_path)
 
         profile = regex[0] if len(regex) > 0 else ''
-        direction = regex[1] if len(regex) > 1 else ''
+        direction = file_path
+        print(direction)
         last_name = sheet['B6'].value
         first_name = sheet['B9'].value
         status = sheet['G22'].value
@@ -139,12 +143,14 @@ class ExcelOperations:
                     pass
             adjusted_width = (max_length + 2)
             sheet.column_dimensions[column[0].column_letter].width = adjusted_width
+            repartoire_index = headers.index("REPARTOIRE")  # Get the index of "repartoire" in headers
+            sheet.column_dimensions[chr(65 + repartoire_index)].width = 15
         wb.save(output_path)
         sender = self.select_users_for_resend_email(information)
         if sender:
-            print("Emails have been sent successfully")
+            logging.info("Emails sent successfully")
         else:
-            print("Emails have not been sent")
+            logging.error("Error sending emails")
 
         return True
 
@@ -153,23 +159,26 @@ class ExcelOperations:
         resend_users_3_months = {}
         resend_users_6_months = {}
         send_email = MailSender()
-
+        db = Database()
         current_date = datetime.now()
 
-        for info in information:
 
+        for info in information:
             for interview in info['interviews']:
                 if interview['date'] is not None:
                     interview_date = datetime.strptime(interview['date'], '%d/%m/%y')
                     diff = current_date - interview_date
+                    db.insert_data(info, interview_date)
                     if diff.days > 90 and diff.days < 180:
+                        db.update_data(interview_date, info['email'])
                         resend_users_3_months[info['email']] = info['first_name']
-                        email = send_email.send_email_after_3_moths(info)
+                       # email = send_email.send_email_after_3_moths(info)
 
 
                     elif diff.days > 180:
+
                         resend_users_6_months[info['email']] = info['first_name']
-                        email = send_email.send_email_after_3_moths(info)
+                      #  email = send_email.send_email_after_3_moths(info)
 
         return True
 

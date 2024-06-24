@@ -4,7 +4,7 @@ from tkinter import ttk, filedialog as fd, messagebox
 from PIL import Image, ImageTk
 from relance_rh.excel_operations import ExcelOperations
 import os
-
+import logging
 import time
 
 # https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
@@ -30,7 +30,6 @@ class Visuel:
 
 	def find_folder_widget(self):
 
-
 		root = Tk()
 		root.title("Relance RH")
 		root.geometry("600x300")
@@ -48,13 +47,14 @@ class Visuel:
 		root.mainloop()
 
 	def select_folder(self):
-
 		self.folder = fd.askdirectory()
 		if self.folder:
+			logging.info("Folder selected")
 			self.find_files_widget()
 			return True
 		else:
 			messagebox.showinfo("Aucun dossier sélectionné","Vous n'avez sélectionné aucun dossier. Voulez-vous réessayer?")
+			logging.error("No folder selected")
 			return False
 
 
@@ -62,15 +62,20 @@ class Visuel:
 
 	def find_files_widget(self):
 		instance_exelOpr = ExcelOperations()
+
 		data = instance_exelOpr.process_excel_files(self.folder)
+
 		if data is None:
 			messagebox.showinfo("Aucun fichier trouvé", "Aucun fichier n'a été trouvé dans le dossier sélectionné")
+			logging.error("No files found in the selected folder")
 			self.label.config(text="Checher un autre dossier")
 			self.btn.config(state="normal")
 		else:
 			self.btn.config(state="disabled")
 			time.sleep(1)
 			messagebox.showinfo("Traitement terminé", "Le traitement des fichiers est terminé, vous pouvez maintenant sauvegarder les données")
+			logging.info("Files processed successfully")
+			print(data)
 			self.save_widget(data)
 			return data
 
@@ -80,12 +85,16 @@ class Visuel:
 		instance_exelOpr = ExcelOperations()
 		new_excel = instance_exelOpr.create_new_excel_file(data, file.name)
 		if new_excel is True:
-			messagebox.showinfo("Sauvegarde terminée", "Les données ont été sauvegardées avec succès")
+			messagebox.showinfo("Sauvegarde terminée",
+			                    "Les données ont été sauvegardées avec succès")
+			logging.info("Data saved successfully")
 			self.label.config(text="Checher un autre dossier")
 			self.btn.config(text="Chercher", command=self.select_folder, state="normal")
 			time.sleep(2)
 		else:
-			messagebox.showinfo("Aucun fichier sélectionné", "Vous n'avez pas sélectionné de fichier. Voulez-vous réessayer?")
+			messagebox.showinfo("Aucun fichier sélectionné",
+			                    "Vous n'avez pas sélectionné de fichier. Voulez-vous réessayer?")
+			logging.error("No file selected")
 			self.save_widget(data)
 
 

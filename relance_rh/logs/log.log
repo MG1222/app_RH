@@ -1,0 +1,63 @@
+
+2024-06-24 17:20:35,714 - INFO - Starting the application
+2024-06-24 17:20:40,428 - INFO - Folder selected
+2024-06-24 17:20:43,379 - INFO - Files processed successfully
+2024-06-24 17:21:04,218 - INFO - Starting the application
+2024-06-24 17:21:08,193 - INFO - Folder selected
+2024-06-24 17:21:11,138 - INFO - Files processed successfully
+2024-06-24 17:21:59,227 - INFO - Starting the application
+2024-06-24 17:22:03,584 - INFO - Folder selected
+2024-06-24 17:22:06,062 - INFO - Files processed successfully
+2024-06-24 17:23:05,866 - INFO - Starting the application
+2024-06-24 17:23:10,673 - INFO - Starting the application
+2024-06-24 17:23:14,506 - INFO - Folder selected
+2024-06-24 17:23:17,182 - INFO - Files processed successfully
+2024-06-24 17:26:57,863 - INFO - Starting the application
+2024-06-24 17:27:01,646 - INFO - Folder selected
+2024-06-24 17:27:04,038 - INFO - Files processed successfully
+2024-06-24 17:32:27,947 - INFO - Starting the application
+2024-06-24 17:32:32,146 - INFO - Folder selected
+2024-06-24 17:32:34,711 - INFO - Files processed successfully
+2024-06-24 17:37:21,357 - INFO - Starting the application
+2024-06-24 17:37:26,803 - INFO - Folder selected
+2024-06-24 17:37:29,307 - INFO - Files processed successfully
+2024-06-24 17:37:34,110 - ERROR - User with email p.ponama1@gmail.com already exists.
+2024-06-24 17:37:34,110 - ERROR - User with email anisradaoui1@gmail.com already exists.
+2024-06-24 17:37:34,110 - ERROR - User with email manjato25@gmail.com already exists.
+2024-06-24 17:37:34,110 - INFO - Emails sent successfully
+2024-06-24 17:37:35,280 - INFO - Data saved successfully
+2024-06-24 17:42:34,093 - INFO - Starting the application
+2024-06-24 17:42:38,240 - INFO - Folder selected
+2024-06-24 17:42:40,757 - INFO - Files processed successfully
+2024-06-24 17:42:47,779 - ERROR - User with email p.ponama1@gmail.com already exists.
+2024-06-24 17:42:47,779 - ERROR - User with email anisradaoui1@gmail.com already exists.
+2024-06-24 17:42:47,779 - ERROR - User with email manjato25@gmail.com already exists.
+2024-06-24 17:42:47,779 - INFO - Emails sent successfully
+2024-06-24 17:42:49,901 - INFO - Data saved successfully
+2024-06-24 17:44:13,662 - INFO - Starting the application
+2024-06-24 17:44:17,647 - INFO - Folder selected
+2024-06-24 17:44:20,146 - INFO - Files processed successfully
+2024-06-24 17:44:24,629 - ERROR - User with email p.ponama1@gmail.com already exists.
+2024-06-24 17:44:24,629 - ERROR - User with email anisradaoui1@gmail.com already exists.
+2024-06-24 17:44:24,629 - ERROR - User with email manjato25@gmail.com already exists.
+2024-06-24 17:44:24,629 - INFO - Emails sent successfully
+2024-06-24 17:44:31,683 - INFO - Data saved successfully
+2024-06-24 17:46:27,630 - INFO - Starting the application
+2024-06-24 17:46:33,006 - INFO - Folder selected
+2024-06-24 17:46:35,722 - INFO - Files processed successfully
+2024-06-24 17:46:41,208 - INFO - Emails sent successfully
+2024-06-24 17:46:42,557 - INFO - Data saved successfully
+2024-06-24 17:55:36,419 - INFO - Starting the application
+2024-06-24 17:55:41,037 - INFO - Folder selected
+2024-06-24 17:55:43,512 - INFO - Files processed successfully
+2024-06-24 17:55:47,519 - ERROR - User with email p.ponama1@gmail.com already exists.
+2024-06-24 17:55:47,519 - ERROR - Error updating user with email p.ponama1@gmail.com: Error binding parameter 1: type 'dict' is not supported
+2024-06-24 17:55:47,519 - ERROR - User with email anisradaoui1@gmail.com already exists.
+2024-06-24 17:55:47,519 - ERROR - User with email manjato25@gmail.com already exists.
+2024-06-24 17:55:47,519 - ERROR - Error updating user with email manjato25@gmail.com: UNIQUE constraint failed: relance_rh.email
+2024-06-24 17:55:47,519 - INFO - Emails sent successfully
+2024-06-24 17:55:49,137 - INFO - Data saved successfully
+2024-06-24 18:01:49,967 - INFO - Starting the application
+2024-06-24 18:01:54,365 - INFO - Folder selected
+2024-06-24 18:01:56,853 - INFO - Files processed successfully
+2024-06-24 18:02:00,795 - ERROR - User with email p.ponama1@gmail.com already exists.
