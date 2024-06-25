@@ -1,9 +1,0 @@
-{
-  "email": {
-    "sender_email": "mgantuya@akema.fr",
-    "smtp_server": "mail.akema.fr",
-    "smtp_port": 587,
-    "login": "mgantuya@akema.fr",
-    "password": "!Akema!2024"
-  }
-}

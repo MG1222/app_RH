@@ -1,24 +1,27 @@
 import os
-import sys
-import json
+import logging
 from relance_rh.ui import Visuel
 
-# https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
-def resource_path(relative_path):
-	""" Get absolute path to resource, works for dev and for PyInstaller """
-	try:
-		# PyInstaller creates a temp folder and stores path in _MEIPASS
-		base_path = sys._MEIPASS
-	except Exception:
-		base_path = os.path.abspath(".")
 
-	return os.path.join(base_path, relative_path)
 
+# create a log file
+log_file = os.path.join(os.path.dirname(__file__), "logs", "log.log")
+logging.basicConfig(
+    filename=log_file,
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+logging.info("Starting the application")
 
 
 def main():
-	ui = Visuel()
-	ui.find_folder_widget()
+	try:
+		ui = Visuel()
+		ui.find_folder_widget()
+	except Exception as e:
+		logging.error(f"An error occured: {e}")
+		raise e
 
 
 
