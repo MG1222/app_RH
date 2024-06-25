@@ -26,8 +26,6 @@ imports:
  &#8226;   <a href="#collections">collections</a>
  &#8226;   <a href="#collections.abc">collections.abc</a>
  &#8226;   <a href="#copyreg">copyreg</a>
- &#8226;   <a href="#email.mime.multipart">email.mime.multipart</a>
- &#8226;   <a href="#email.mime.text">email.mime.text</a>
  &#8226;   <a href="#encodings">encodings</a>
  &#8226;   <a href="#encodings.aliases">encodings.aliases</a>
  &#8226;   <a href="#encodings.ascii">encodings.ascii</a>
@@ -155,10 +153,10 @@ imports:
  &#8226;   <a href="#genericpath">genericpath</a>
  &#8226;   <a href="#heapq">heapq</a>
  &#8226;   <a href="#io">io</a>
- &#8226;   <a href="#json">json</a>
  &#8226;   <a href="#keyword">keyword</a>
  &#8226;   <a href="#linecache">linecache</a>
  &#8226;   <a href="#locale">locale</a>
+ &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#ntpath">ntpath</a>
  &#8226;   <a href="#openpyxl">openpyxl</a>
  &#8226;   <a href="#operator">operator</a>
@@ -177,7 +175,6 @@ imports:
  &#8226;   <a href="#relance_rh.excel_operations">relance_rh.excel_operations</a>
  &#8226;   <a href="#relance_rh.ui">relance_rh.ui</a>
  &#8226;   <a href="#reprlib">reprlib</a>
- &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
@@ -4789,9 +4786,7 @@ imported by:
  &#8226;   <a href="#encodings.base64_codec">encodings.base64_codec</a>
  &#8226;   <a href="#http.server">http.server</a>
  &#8226;   <a href="#main.py">main.py</a>
- &#8226;   <a href="#relance_rh.mail_sender">relance_rh.mail_sender</a>
  &#8226;   <a href="#secrets">secrets</a>
- &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#xmlrpc.client">xmlrpc.client</a>
@@ -5550,7 +5545,6 @@ imported by:
  &#8226;   <a href="#openpyxl.worksheet.dimensions">openpyxl.worksheet.dimensions</a>
  &#8226;   <a href="#openpyxl.worksheet.merge">openpyxl.worksheet.merge</a>
  &#8226;   <a href="#pkg_resources._vendor.backports.tarfile">pkg_resources._vendor.backports.tarfile</a>
- &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#weakref">weakref</a>
  &#8226;   <a href="#webbrowser">webbrowser</a>
@@ -5704,7 +5698,6 @@ imported by:
  &#8226;   <a href="#openpyxl.writer.excel">openpyxl.writer.excel</a>
  &#8226;   <a href="#plistlib">plistlib</a>
  &#8226;   <a href="#relance_rh.excel_operations">relance_rh.excel_operations</a>
- &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#xmlrpc.client">xmlrpc.client</a>
 
   </div>
@@ -5921,10 +5914,6 @@ imported by:
  &#8226;   <a href="#email.headerregistry">email.headerregistry</a>
  &#8226;   <a href="#email.iterators">email.iterators</a>
  &#8226;   <a href="#email.message">email.message</a>
- &#8226;   <a href="#email.mime">email.mime</a>
- &#8226;   <a href="#email.mime.base">email.mime.base</a>
- &#8226;   <a href="#email.mime.image">email.mime.image</a>
- &#8226;   <a href="#email.mime.nonmultipart">email.mime.nonmultipart</a>
  &#8226;   <a href="#email.parser">email.parser</a>
  &#8226;   <a href="#email.policy">email.policy</a>
  &#8226;   <a href="#email.quoprimime">email.quoprimime</a>
@@ -6039,7 +6028,6 @@ imports:
 imported by:
     <a href="#email.charset">email.charset</a>
  &#8226;   <a href="#email.header">email.header</a>
- &#8226;   <a href="#smtplib">smtplib</a>
 
   </div>
 
@@ -6105,7 +6093,6 @@ imports:
   <div class="import">
 imported by:
     <a href="#email.charset">email.charset</a>
- &#8226;   <a href="#email.mime.image">email.mime.image</a>
 
   </div>
 
@@ -6130,7 +6117,6 @@ imported by:
  &#8226;   <a href="#email.header">email.header</a>
  &#8226;   <a href="#email.headerregistry">email.headerregistry</a>
  &#8226;   <a href="#email.message">email.message</a>
- &#8226;   <a href="#email.mime.nonmultipart">email.mime.nonmultipart</a>
 
   </div>
 
@@ -6178,7 +6164,6 @@ imports:
   <div class="import">
 imported by:
     <a href="#email.message">email.message</a>
- &#8226;   <a href="#smtplib">smtplib</a>
 
   </div>
 
@@ -6271,129 +6256,12 @@ imports:
 imported by:
     <a href="#email.contentmanager">email.contentmanager</a>
  &#8226;   <a href="#email.feedparser">email.feedparser</a>
- &#8226;   <a href="#email.mime.base">email.mime.base</a>
  &#8226;   <a href="#email.policy">email.policy</a>
  &#8226;   <a href="#http.client">http.client</a>
  &#8226;   <a href="#importlib.metadata._adapters">importlib.metadata._adapters</a>
  &#8226;   <a href="#packaging.metadata">packaging.metadata</a>
  &#8226;   <a href="#pkg_resources._vendor.packaging.metadata">pkg_resources._vendor.packaging.metadata</a>
  &#8226;   <a href="#pydoc">pydoc</a>
- &#8226;   <a href="#smtplib">smtplib</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="email.mime"></a>
-  <a target="code" href="///C:/Users/Nicolas/AppData/Local/Programs/Python/Python312/Lib/email/mime/__init__.py" type="text/plain"><tt>email.mime</tt></a>
-<span class="moduletype">Package</span>  <div class="import">
-imports:
-    <a href="#email">email</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#email.mime.base">email.mime.base</a>
- &#8226;   <a href="#email.mime.image">email.mime.image</a>
- &#8226;   <a href="#email.mime.multipart">email.mime.multipart</a>
- &#8226;   <a href="#email.mime.nonmultipart">email.mime.nonmultipart</a>
- &#8226;   <a href="#email.mime.text">email.mime.text</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="email.mime.base"></a>
-  <a target="code" href="///C:/Users/Nicolas/AppData/Local/Programs/Python/Python312/Lib/email/mime/base.py" type="text/plain"><tt>email.mime.base</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#email">email</a>
- &#8226;   <a href="#email.message">email.message</a>
- &#8226;   <a href="#email.mime">email.mime</a>
- &#8226;   <a href="#email.policy">email.policy</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#email.mime.multipart">email.mime.multipart</a>
- &#8226;   <a href="#email.mime.nonmultipart">email.mime.nonmultipart</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="email.mime.image"></a>
-  <a target="code" href="///C:/Users/Nicolas/AppData/Local/Programs/Python/Python312/Lib/email/mime/image.py" type="text/plain"><tt>email.mime.image</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#email">email</a>
- &#8226;   <a href="#email.encoders">email.encoders</a>
- &#8226;   <a href="#email.mime">email.mime</a>
- &#8226;   <a href="#email.mime.nonmultipart">email.mime.nonmultipart</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#relance_rh.mail_sender">relance_rh.mail_sender</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="email.mime.multipart"></a>
-  <a target="code" href="///C:/Users/Nicolas/AppData/Local/Programs/Python/Python312/Lib/email/mime/multipart.py" type="text/plain"><tt>email.mime.multipart</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#email.mime">email.mime</a>
- &#8226;   <a href="#email.mime.base">email.mime.base</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#main.py">main.py</a>
- &#8226;   <a href="#relance_rh.mail_sender">relance_rh.mail_sender</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="email.mime.nonmultipart"></a>
-  <a target="code" href="///C:/Users/Nicolas/AppData/Local/Programs/Python/Python312/Lib/email/mime/nonmultipart.py" type="text/plain"><tt>email.mime.nonmultipart</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#email">email</a>
- &#8226;   <a href="#email.errors">email.errors</a>
- &#8226;   <a href="#email.mime">email.mime</a>
- &#8226;   <a href="#email.mime.base">email.mime.base</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#email.mime.image">email.mime.image</a>
- &#8226;   <a href="#email.mime.text">email.mime.text</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="email.mime.text"></a>
-  <a target="code" href="///C:/Users/Nicolas/AppData/Local/Programs/Python/Python312/Lib/email/mime/text.py" type="text/plain"><tt>email.mime.text</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#email.mime">email.mime</a>
- &#8226;   <a href="#email.mime.nonmultipart">email.mime.nonmultipart</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#main.py">main.py</a>
- &#8226;   <a href="#relance_rh.mail_sender">relance_rh.mail_sender</a>
 
   </div>
 
@@ -6440,7 +6308,6 @@ imports:
   <div class="import">
 imported by:
     <a href="#email.message">email.message</a>
- &#8226;   <a href="#email.mime.base">email.mime.base</a>
  &#8226;   <a href="#packaging.metadata">packaging.metadata</a>
  &#8226;   <a href="#pkg_resources._vendor.packaging.metadata">pkg_resources._vendor.packaging.metadata</a>
 
@@ -6495,7 +6362,6 @@ imported by:
  &#8226;   <a href="#email.message">email.message</a>
  &#8226;   <a href="#email.policy">email.policy</a>
  &#8226;   <a href="#http.server">http.server</a>
- &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
@@ -9562,7 +9428,6 @@ imports:
 imported by:
     <a href="#multiprocessing.connection">multiprocessing.connection</a>
  &#8226;   <a href="#secrets">secrets</a>
- &#8226;   <a href="#smtplib">smtplib</a>
 
   </div>
 
@@ -10392,7 +10257,6 @@ imported by:
  &#8226;   <a href="#runpy">runpy</a>
  &#8226;   <a href="#shlex">shlex</a>
  &#8226;   <a href="#six">six</a>
- &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#socket">socket</a>
  &#8226;   <a href="#socketserver">socketserver</a>
  &#8226;   <a href="#subprocess">subprocess</a>
@@ -10544,9 +10408,7 @@ imported by:
     <a href="#json.decoder">json.decoder</a>
  &#8226;   <a href="#json.encoder">json.encoder</a>
  &#8226;   <a href="#json.scanner">json.scanner</a>
- &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#numpy.__config__">numpy.__config__</a>
- &#8226;   <a href="#relance_rh.config.config_loader_dev">relance_rh.config.config_loader_dev</a>
 
   </div>
 
@@ -10716,9 +10578,12 @@ imported by:
  &#8226;   <a href="#concurrent.futures._base">concurrent.futures._base</a>
  &#8226;   <a href="#hashlib">hashlib</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#multiprocessing.util">multiprocessing.util</a>
  &#8226;   <a href="#packaging.tags">packaging.tags</a>
  &#8226;   <a href="#pkg_resources._vendor.packaging.tags">pkg_resources._vendor.packaging.tags</a>
+ &#8226;   <a href="#relance_rh.excel_operations">relance_rh.excel_operations</a>
+ &#8226;   <a href="#relance_rh.ui">relance_rh.ui</a>
  &#8226;   <a href="#unittest._log">unittest._log</a>
 
   </div>
@@ -22669,9 +22534,7 @@ imported by:
  &#8226;   <a href="#pyi_rth_multiprocessing.py">pyi_rth_multiprocessing.py</a>
  &#8226;   <a href="#pyi_rth_pkgres.py">pyi_rth_pkgres.py</a>
  &#8226;   <a href="#random">random</a>
- &#8226;   <a href="#relance_rh.config.config_loader_dev">relance_rh.config.config_loader_dev</a>
  &#8226;   <a href="#relance_rh.excel_operations">relance_rh.excel_operations</a>
- &#8226;   <a href="#relance_rh.mail_sender">relance_rh.mail_sender</a>
  &#8226;   <a href="#relance_rh.ui">relance_rh.ui</a>
  &#8226;   <a href="#runpy">runpy</a>
  &#8226;   <a href="#shlex">shlex</a>
@@ -25102,7 +24965,6 @@ imported by:
  &#8226;   <a href="#re._parser">re._parser</a>
  &#8226;   <a href="#relance_rh.excel_operations">relance_rh.excel_operations</a>
  &#8226;   <a href="#shlex">shlex</a>
- &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
@@ -25228,44 +25090,8 @@ imported by:
   <a target="code" href="///C:/Users/Nicolas/PycharmProjects/relanceRH/relance_rh/__init__.py" type="text/plain"><tt>relance_rh</tt></a>
 <span class="moduletype">Package</span>  <div class="import">
 imported by:
-    <a href="#relance_rh.config">relance_rh.config</a>
- &#8226;   <a href="#relance_rh.excel_operations">relance_rh.excel_operations</a>
- &#8226;   <a href="#relance_rh.mail_sender">relance_rh.mail_sender</a>
+    <a href="#relance_rh.excel_operations">relance_rh.excel_operations</a>
  &#8226;   <a href="#relance_rh.ui">relance_rh.ui</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="relance_rh.config"></a>
-  <a target="code" href="///C:/Users/Nicolas/PycharmProjects/relanceRH/relance_rh/config/__init__.py" type="text/plain"><tt>relance_rh.config</tt></a>
-<span class="moduletype">Package</span>  <div class="import">
-imports:
-    <a href="#relance_rh">relance_rh</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#relance_rh.config.config_loader_dev">relance_rh.config.config_loader_dev</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="relance_rh.config.config_loader_dev"></a>
-  <a target="code" href="///C:/Users/Nicolas/PycharmProjects/relanceRH/relance_rh/config/config_loader_dev.py" type="text/plain"><tt>relance_rh.config.config_loader_dev</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#json">json</a>
- &#8226;   <a href="#os">os</a>
- &#8226;   <a href="#relance_rh.config">relance_rh.config</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#relance_rh.mail_sender">relance_rh.mail_sender</a>
 
   </div>
 
@@ -25278,41 +25104,18 @@ imported by:
 imports:
     <a href="#datetime">datetime</a>
  &#8226;   <a href="#dateutil.relativedelta">dateutil.relativedelta</a>
+ &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#openpyxl">openpyxl</a>
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#random">random</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#relance_rh">relance_rh</a>
- &#8226;   <a href="#relance_rh.mail_sender">relance_rh.mail_sender</a>
 
   </div>
   <div class="import">
 imported by:
     <a href="#main.py">main.py</a>
  &#8226;   <a href="#relance_rh.ui">relance_rh.ui</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="relance_rh.mail_sender"></a>
-  <a target="code" href="///C:/Users/Nicolas/PycharmProjects/relanceRH/relance_rh/mail_sender.py" type="text/plain"><tt>relance_rh.mail_sender</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#base64">base64</a>
- &#8226;   <a href="#email.mime.image">email.mime.image</a>
- &#8226;   <a href="#email.mime.multipart">email.mime.multipart</a>
- &#8226;   <a href="#email.mime.text">email.mime.text</a>
- &#8226;   <a href="#os">os</a>
- &#8226;   <a href="#relance_rh">relance_rh</a>
- &#8226;   <a href="#relance_rh.config.config_loader_dev">relance_rh.config.config_loader_dev</a>
- &#8226;   <a href="#smtplib">smtplib</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#relance_rh.excel_operations">relance_rh.excel_operations</a>
 
   </div>
 
@@ -25326,6 +25129,7 @@ imports:
     <a href="#PIL">PIL</a>
  &#8226;   <a href="#PIL.Image">PIL.Image</a>
  &#8226;   <a href="#PIL.ImageTk">PIL.ImageTk</a>
+ &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#relance_rh">relance_rh</a>
  &#8226;   <a href="#relance_rh.excel_operations">relance_rh.excel_operations</a>
@@ -25584,35 +25388,6 @@ imported by:
 </div>
 
 <div class="node">
-  <a name="smtplib"></a>
-  <a target="code" href="///C:/Users/Nicolas/AppData/Local/Programs/Python/Python312/Lib/smtplib.py" type="text/plain"><tt>smtplib</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#base64">base64</a>
- &#8226;   <a href="#copy">copy</a>
- &#8226;   <a href="#datetime">datetime</a>
- &#8226;   <a href="#email.base64mime">email.base64mime</a>
- &#8226;   <a href="#email.generator">email.generator</a>
- &#8226;   <a href="#email.message">email.message</a>
- &#8226;   <a href="#email.utils">email.utils</a>
- &#8226;   <a href="#hmac">hmac</a>
- &#8226;   <a href="#io">io</a>
- &#8226;   <a href="#re">re</a>
- &#8226;   <a href="#socket">socket</a>
- &#8226;   <a href="#ssl">ssl</a>
- &#8226;   <a href="#sys">sys</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#main.py">main.py</a>
- &#8226;   <a href="#relance_rh.mail_sender">relance_rh.mail_sender</a>
-
-  </div>
-
-</div>
-
-<div class="node">
   <a name="socket"></a>
   <a target="code" href="///C:/Users/Nicolas/AppData/Local/Programs/Python/Python312/Lib/socket.py" type="text/plain"><tt>socket</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -25647,7 +25422,6 @@ imported by:
  &#8226;   <a href="#multiprocessing.reduction">multiprocessing.reduction</a>
  &#8226;   <a href="#multiprocessing.resource_sharer">multiprocessing.resource_sharer</a>
  &#8226;   <a href="#platform">platform</a>
- &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#socketserver">socketserver</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
@@ -25758,7 +25532,6 @@ imported by:
  &#8226;   <a href="#asyncio.sslproto">asyncio.sslproto</a>
  &#8226;   <a href="#ftplib">ftplib</a>
  &#8226;   <a href="#http.client">http.client</a>
- &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
@@ -26140,7 +25913,6 @@ imported by:
  &#8226;   <a href="#shlex">shlex</a>
  &#8226;   <a href="#shutil">shutil</a>
  &#8226;   <a href="#six">six</a>
- &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#socket">socket</a>
  &#8226;   <a href="#socketserver">socketserver</a>
  &#8226;   <a href="#ssl">ssl</a>

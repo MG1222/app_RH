@@ -1,11 +1,10 @@
 import os
-import sys
-import json
 import logging
 from relance_rh.ui import Visuel
-from relance_rh.create_database import init_db
-from relance_rh.database import Database
 
+
+
+# create a log file
 log_file = os.path.join(os.path.dirname(__file__), "logs", "log.log")
 logging.basicConfig(
     filename=log_file,
@@ -17,11 +16,12 @@ logging.info("Starting the application")
 
 
 def main():
-	init_db()
-	new_db = Database()
-
-	ui = Visuel()
-	ui.find_folder_widget()
+	try:
+		ui = Visuel()
+		ui.find_folder_widget()
+	except Exception as e:
+		logging.error(f"An error occured: {e}")
+		raise e
 
 
 

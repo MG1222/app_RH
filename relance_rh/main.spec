@@ -10,7 +10,6 @@ a = Analysis(
     binaries=[],
     datas=[
             ('./asset/logo.png', 'asset'),
-            ('./config/config.json', 'config'),
     ],
     hiddenimports=[
                     'relance_rh.excel_operations',
@@ -18,10 +17,6 @@ a = Analysis(
                     'openpyxl',
                     'base64',
                     'os',
-                    'smtplib',
-                    'email.mime.multipart',
-                    'email.mime.text',
-                    'relance_rh.config.config_loader_dev'
                     'sys'
     ],
     hookspath=[],
@@ -46,7 +41,7 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,
+    console=False,
 )
 
 coll = COLLECT(
