@@ -118,7 +118,6 @@ class ExcelOperations:
         headers = [header.upper() for header in headers]
         sheet.append(headers)
 
-
         for info in information:
             row = [
                 info['direction'], info['profile'],
@@ -143,44 +142,12 @@ class ExcelOperations:
                     pass
             adjusted_width = (max_length + 2)
             sheet.column_dimensions[column[0].column_letter].width = adjusted_width
-            repartoire_index = headers.index("REPARTOIRE")  # Get the index of "repartoire" in headers
+            repartoire_index = headers.index("REPARTOIRE")
             sheet.column_dimensions[chr(65 + repartoire_index)].width = 15
         wb.save(output_path)
-        sender = self.select_users_for_resend_email(information)
-        if sender:
-            logging.info("Emails sent successfully")
-        else:
-            logging.error("Error sending emails")
 
         return True
 
-
-    def select_users_for_resend_email(self, information):
-        resend_users_3_months = {}
-        resend_users_6_months = {}
-        send_email = MailSender()
-        db = Database()
-        current_date = datetime.now()
-
-
-        for info in information:
-            for interview in info['interviews']:
-                if interview['date'] is not None:
-                    interview_date = datetime.strptime(interview['date'], '%d/%m/%y')
-                    diff = current_date - interview_date
-                    db.insert_data(info, interview_date)
-                    if diff.days > 90 and diff.days < 180:
-                        db.update_data(interview_date, info['email'])
-                        resend_users_3_months[info['email']] = info['first_name']
-                       # email = send_email.send_email_after_3_moths(info)
-
-
-                    elif diff.days > 180:
-
-                        resend_users_6_months[info['email']] = info['first_name']
-                      #  email = send_email.send_email_after_3_moths(info)
-
-        return True
 
     def extract_path_profile(self, path):
         infos = []
