@@ -4,7 +4,7 @@ import random
 from dateutil.relativedelta import relativedelta
 from openpyxl import load_workbook, Workbook
 from datetime import datetime
-from relance_rh.mail_sender_dev import MailSender
+from relance_rh.mail_sender import MailSender
 
 
 class ExcelOperations:
