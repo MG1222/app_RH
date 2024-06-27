@@ -10,14 +10,16 @@ a = Analysis(
     binaries=[],
     datas=[
             ('./asset/logo.png', 'asset'),
+            ('./logs/log.log', 'logs'),
     ],
     hiddenimports=[
-                    'relance_rh.excel_operations',
-                    'tkinter',
-                    'openpyxl',
-                    'base64',
-                    'os',
-                    'sys'
+        'relance_rh.excel_operations',
+        'tkinter',
+        'openpyxl',
+        'base64',
+        'os',
+        'sys',
+        'subprocess',
     ],
     hookspath=[],
     runtime_hooks=[],

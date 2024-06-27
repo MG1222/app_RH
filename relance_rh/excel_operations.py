@@ -9,23 +9,12 @@ from datetime import datetime
 
 class ExcelOperations:
 	
-	def get_excel_files(self, folder_path):
-		excel_files = []
-		for root, dirs, files in os.walk(folder_path):
-			for file in files:
-				if file.endswith(".xlsx") or file.endswith(".xls"):
-					regex = self.extract_path_profile(root)
-					file_path = os.path.join(root, file)
-					check_format = self.verify_format_file_excel(file_path)
-					if check_format:
-						excel_files.append((file_path, regex))
-		return excel_files
-
-
-	def process_excel_files(self, folder_path):
+	def process_excel_files(self, folder_path, progress_bar=None):
 		information = []
 		excel_files = self.get_excel_files(folder_path)
-		for file_path, regex in excel_files:
+		total_files = len(excel_files)
+		
+		for index, (file_path, regex) in enumerate(excel_files):
 			try:
 				# Extract information from the file
 				info_from_excel = self.extract_information_from_excel(file_path, regex)
@@ -33,8 +22,8 @@ class ExcelOperations:
 				if info_from_excel is None:
 					continue
 				# Verify if the information is not already in the list
-				if any(info_from_excel['last_name'] == item['last_name'] and info_from_excel['first_name'] == item[
-					'first_name'] for item in information):
+				if any(info_from_excel['last_name'] == item['last_name'] and
+				       info_from_excel['first_name'] == item['first_name'] for item in information):
 					continue
 				interviews = []
 				for date, manager in zip(info_from_excel['dates'], info_from_excel['managers']):
@@ -43,11 +32,34 @@ class ExcelOperations:
 				information.append(info_from_excel)
 			except Exception as e:
 				logging.error(f"Error while processing file {file_path}: {e}")
+			
+			# Update progress bar
+			if progress_bar:
+				progress_value = ((index + 2) / total_files) * 100
+				progress_bar['value'] = progress_value
+				progress_bar.update()
 		
 		if not information:
 			return None
 		
 		return information
+	
+	def get_excel_files(self, folder_path):
+		excel_files = []
+		for root, dirs, files in os.walk(folder_path):
+			for file in files:
+				if file.endswith(".xlsx") or file.endswith(".xls"):
+					regex = self.extract_path_profile(root)
+					file_path = os.path.join(root, file)
+					file_size = os.path.getsize(file_path)
+					if file_size == 0:
+						continue
+					check_format = self.verify_format_file_excel(file_path)
+					if check_format:
+						excel_files.append((file_path, regex))
+		return excel_files
+	
+
 	
 	def extract_contact_information(self, sheet):
 		tel_num = sheet['C5'].value
@@ -78,21 +90,26 @@ class ExcelOperations:
 			date_value = self.verify_format_date(date_value)
 			if date_value is not None:
 				date_value = self.format_date(date_value)
-				date_value = self.change_date_randomly(date_value)
+			#	date_value = self.change_date_randomly(date_value)
 			dates.append(date_value)
 		
 		for row in range(7, 10):
 			manager_value = sheet.cell(row=row, column=7).value
 			managers.append(manager_value if manager_value is not None else "")
+
+			
+			last_interview = self.find_last_interview(dates)
+			print(last_interview)
+			
 		
-		return dates, managers
+		return dates, managers, last_interview
 	
 	def extract_information_from_excel(self, file_path, regex):
 		wb = load_workbook(file_path)
 		sheet = wb.active
 		
 		tel_num, email = self.extract_contact_information(sheet)
-		dates, managers = self.extract_interview_information(sheet)
+		dates, managers, last_interview = self.extract_interview_information(sheet)
 		
 		profile = regex[0] if len(regex) > 0 else ''
 		direction = file_path
@@ -111,7 +128,8 @@ class ExcelOperations:
 			'email': email,
 			'status': status,
 			'dates': dates,
-			'managers': managers
+			'managers': managers,
+			'last_interview': last_interview
 		}
 		
 		return information_perso
@@ -120,6 +138,7 @@ class ExcelOperations:
 		headers = ["repartoire", "profil", "nom", "prenom", "tel", "email", "disponibilite"]
 		for i in range(3):
 			headers += [f"Date{i + 1}", f"Entretien{i + 1}"]
+		headers.append("dernier entretien")
 		return [header.upper() for header in headers]
 	
 	def create_new_excel_file(self, information, output_path):
@@ -143,7 +162,9 @@ class ExcelOperations:
 			
 			for interview in info['interviews']:
 				row += [interview['date'], interview['manager']]
+			row.append(info['last_interview'])
 			sheet.append(row)
+			
 		
 		# column style adjustment
 		for column in sheet.columns:
@@ -243,3 +264,14 @@ class ExcelOperations:
 		date = new_date.strftime("%d/%m/%y")
 		
 		return date
+	
+	def find_last_interview(self, dates):
+		for date in dates:
+			if date is not None:
+				valid_dates = [datetime.strptime(date, "%d/%m/%y") for date in dates if date is not None]
+				if valid_dates:
+					most_recent_date = max(valid_dates)
+					most_recent_date = most_recent_date.strftime("%d/%m/%y")
+					return most_recent_date
+				else:
+					return None

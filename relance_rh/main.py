@@ -12,7 +12,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-logging.info("Starting the application")
+logging.warning("=== Starting the application")
 
 
 def main():

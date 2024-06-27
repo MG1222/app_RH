@@ -7,8 +7,9 @@ import os
 import logging
 import time
 import subprocess
+import threading
 
-# https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
+
 def resource_path(relative_path):
 	""" Get absolute path to resource, works for dev and for PyInstaller """
 	try:
@@ -16,7 +17,6 @@ def resource_path(relative_path):
 		base_path = sys._MEIPASS
 	except Exception:
 		base_path = os.path.abspath(".")
-
 	return os.path.join(base_path, relative_path)
 
 
@@ -25,24 +25,28 @@ class Visuel:
 		self.logo = None
 		self.label = None
 		self.btn = None
-
+		self.progress = None
+		self.root = None
+	
 	def find_folder_widget(self):
-
-		root = Tk()
-		root.title("Relance RH")
-		root.geometry("600x300")
+		self.root = Tk()
+		self.root.title("Relance RH")
+		self.root.geometry("600x300")
 		self.logo = Image.open(resource_path("./asset/logo.png"))
 		self.logo.thumbnail((100, 100))
 		self.logo = ImageTk.PhotoImage(self.logo)
-		label = ttk.Label(root, image=self.logo)
+		label = ttk.Label(self.root, image=self.logo)
 		label.pack(side="top", padx=10, pady=10)
-		self.label = ttk.Label(root, text="Veuillez choisir le dossier contenant les fichiers à traiter")
+		self.label = ttk.Label(self.root, text="Veuillez choisir le dossier contenant les fichiers à traiter")
 		self.label.pack()
-		self.btn = ttk.Button(root, text="Chercher", command=self.select_folder)
+		self.btn = ttk.Button(self.root, text="Chercher", command=self.select_folder)
 		self.btn.pack()
-
-		root.mainloop()
-
+		
+		# Create progress bar but do not pack it yet
+		self.progress = ttk.Progressbar(self.root, orient="horizontal", length=300, mode="determinate")
+		
+		self.root.mainloop()
+	
 	def select_folder(self):
 		self.folder = fd.askdirectory()
 		if self.folder:
@@ -51,15 +55,22 @@ class Visuel:
 			return True
 		else:
 			messagebox.showwarning("Aucun dossier sélectionné",
-			                    "Vous n'avez sélectionné aucun dossier.")
+			                       "Vous n'avez sélectionné aucun dossier.")
 			logging.error("No folder selected")
 			return False
 	
-	
 	def find_files_widget(self):
-		instance_exelOpr = ExcelOperations()
+		# Show progress bar
+		self.progress.pack(pady=10)
+		self.progress['value'] = 0
+		self.progress.update()
 		
-		data = instance_exelOpr.process_excel_files(self.folder)
+		threading.Thread(target=self.process_files).start()
+		self.btn.config(state="disabled")
+	
+	def process_files(self):
+		instance_exelOpr = ExcelOperations()
+		data = instance_exelOpr.process_excel_files(self.folder, self.progress)
 		
 		if data is None:
 			messagebox.showerror("Aucun fichier trouvé",
@@ -68,18 +79,19 @@ class Visuel:
 			self.label.config(text="Checher un autre dossier")
 			self.btn.config(state="normal")
 		else:
-			self.btn.config(state="disabled")
 			time.sleep(1)
+			self.btn.config(state="disabled")
 			messagebox.showinfo("Traitement terminé",
 			                    "Le traitement des fichiers est terminé, vous pouvez maintenant sauvegarder les données")
 			logging.info("Files processed successfully")
 			self.prompt_save(data)
+		
+		# Hide progress bar after processing is complete
+		self.progress.pack_forget()
 	
 	def save_widget(self, data):
 		file = fd.asksaveasfile(mode='w', defaultextension=".xlsx")
-		
 		if file is None:
-			# No file selected, prompt the user again
 			messagebox.showwarning("Sauvegarde non sélectionnée",
 			                       "Aucun fichier n'a été sélectionné pour la sauvegarde.")
 			self.label.config(text="Sauvegarder les données")
@@ -88,7 +100,7 @@ class Visuel:
 		
 		instance_exelOpr = ExcelOperations()
 		try:
-			new_exel = instance_exelOpr.create_new_excel_file(data, file.name)
+			new_excel = instance_exelOpr.create_new_excel_file(data, file.name)
 			logging.info("Data saved successfully")
 			return file.name
 		
@@ -106,6 +118,7 @@ class Visuel:
 			self.btn.config(text="Chercher", command=self.select_folder, state="normal")
 			open_file_response = messagebox.askquestion("Sauvegarde terminée",
 			                                            "Les données ont été sauvegardées avec succès! Voulez-vous ouvrir le fichier?")
+			
 			if open_file_response == "yes":
 				self.open_file(file_path)
 		else:
@@ -113,6 +126,7 @@ class Visuel:
 			self.btn.config(text="Souvegarder", command=lambda: self.prompt_save(data), state="normal")
 	
 	def open_file(self, file_path):
+		logging.debug(f"open_file called with file_path: {file_path}")
 		try:
 			if sys.platform == "win32":
 				os.startfile(file_path)
