@@ -16,12 +16,11 @@ class ExcelOperations:
 		
 		for index, (file_path, regex) in enumerate(excel_files):
 			try:
-				# Extract information from the file
 				info_from_excel = self.extract_information_from_excel(file_path, regex)
-				# Verify if the information is not empty
+			
 				if info_from_excel is None:
 					continue
-				# Verify if the information is not already in the list
+				
 				if any(info_from_excel['last_name'] == item['last_name'] and
 				       info_from_excel['first_name'] == item['first_name'] for item in information):
 					continue
@@ -33,7 +32,7 @@ class ExcelOperations:
 			except Exception as e:
 				logging.error(f"Error while processing file {file_path}: {e}")
 			
-			# Update progress bar
+			
 			if progress_bar:
 				progress_value = ((index + 2) / total_files) * 100
 				progress_bar['value'] = progress_value
@@ -247,23 +246,6 @@ class ExcelOperations:
 		formatted_date = date_object.strftime('%d/%m/%y')
 		
 		return formatted_date
-	
-	
-	# TODO: delete before prod version
-	def change_date_randomly(self, date_value):
-		date = datetime.strptime(date_value, "%d/%m/%y")
-		months_options = [3, 6]
-		months = random.choice(months_options)
-		today = datetime.today()
-		new_date = today - relativedelta(months=months)
-		
-		new_date = new_date.replace(year=2024)
-		if new_date.month == 12:
-			new_date = new_date.replace(year=2023)
-		
-		date = new_date.strftime("%d/%m/%y")
-		
-		return date
 	
 	def find_last_interview(self, dates):
 		for date in dates:

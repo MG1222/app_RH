@@ -13,7 +13,6 @@ import threading
 def resource_path(relative_path):
 	""" Get absolute path to resource, works for dev and for PyInstaller """
 	try:
-		# PyInstaller creates a temp folder and stores path in _MEIPASS
 		base_path = sys._MEIPASS
 	except Exception:
 		base_path = os.path.abspath(".")
@@ -41,8 +40,7 @@ class Visuel:
 		self.label.pack()
 		self.btn = ttk.Button(self.root, text="Chercher", command=self.select_folder)
 		self.btn.pack()
-		
-		# Create progress bar but do not pack it yet
+
 		self.progress = ttk.Progressbar(self.root, orient="horizontal", length=300, mode="determinate")
 		
 		self.root.mainloop()
@@ -60,7 +58,6 @@ class Visuel:
 			return False
 	
 	def find_files_widget(self):
-		# Show progress bar
 		self.progress.pack(pady=10)
 		self.progress['value'] = 0
 		self.progress.update()
@@ -86,7 +83,6 @@ class Visuel:
 			logging.info("Files processed successfully")
 			self.prompt_save(data)
 		
-		# Hide progress bar after processing is complete
 		self.progress.pack_forget()
 	
 	def save_widget(self, data):
