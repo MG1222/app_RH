@@ -1,23 +1,40 @@
+import json
 import os
 import re
-import random
 import logging
-from dateutil.relativedelta import relativedelta
+import time
+import concurrent.futures
+from tkinter import messagebox
 from openpyxl import load_workbook, Workbook
 from datetime import datetime
 
 
 class ExcelOperations:
+	def __init__(self):
+		self.params = self.load_params()
+	
+	def load_params(self):
+		try:
+			with open("./config/setting_excel.json", 'r') as f:
+				return json.load(f)
+		except FileNotFoundError:
+			logging.error('json file not found')
+			return None
 	
 	def process_excel_files(self, folder_path, progress_bar=None):
 		information = []
 		excel_files = self.get_excel_files(folder_path)
 		total_files = len(excel_files)
 		
+		if progress_bar:
+			progress_bar['value'] = 5
+			progress_bar.update()
+		
 		for index, (file_path, regex) in enumerate(excel_files):
+			
 			try:
 				info_from_excel = self.extract_information_from_excel(file_path, regex)
-			
+				
 				if info_from_excel is None:
 					continue
 				
@@ -32,11 +49,14 @@ class ExcelOperations:
 			except Exception as e:
 				logging.error(f"Error while processing file {file_path}: {e}")
 			
-			
 			if progress_bar:
-				progress_value = ((index + 2) / total_files) * 100
+				progress_value = ((index + 1) / total_files) * 100
 				progress_bar['value'] = progress_value
 				progress_bar.update()
+		
+		if progress_bar:
+			progress_bar['value'] = 100
+			progress_bar.update()
 		
 		if not information:
 			return None
@@ -45,87 +65,102 @@ class ExcelOperations:
 	
 	def get_excel_files(self, folder_path):
 		excel_files = []
-		for root, dirs, files in os.walk(folder_path):
-			for file in files:
-				if file.endswith(".xlsx") or file.endswith(".xls"):
-					regex = self.extract_path_profile(root)
-					file_path = os.path.join(root, file)
-					file_size = os.path.getsize(file_path)
-					if file_size == 0:
-						continue
-					check_format = self.verify_format_file_excel(file_path)
-					if check_format:
-						excel_files.append((file_path, regex))
+		with concurrent.futures.ThreadPoolExecutor() as executor:
+			futures = []
+			for root, dirs, files in os.walk(folder_path):
+				for file in files:
+					if file.endswith(".xlsx") or file.endswith(".xls"):
+						file_path = os.path.join(root, file)
+						futures.append(executor.submit(self.check_file, file_path, root))
+			
+			for future in concurrent.futures.as_completed(futures):
+				result = future.result()
+				if result:
+					excel_files.append(result)
+		
 		return excel_files
 	
-
+	def check_file(self, file_path, root):
+		if not os.path.exists(file_path):
+			return None
+		try:
+			is_open = self.is_file_open(file_path)
+			check_format = self.verify_format_file_excel(file_path)
+			if is_open:
+				if check_format:
+					return file_path, self.extract_path_profile(root)
+				else:
+					return None
+			else:
+				if check_format:
+					return file_path, self.extract_path_profile(root)
+		except PermissionError:
+			time.sleep(1)
+			logging.error("Error permision ")
+		except Exception as e:
+			logging.error(f"Erreur lors du traitement du fichier {file_path}: {e}")
+			return None
+		return None
 	
-	def extract_contact_information(self, sheet):
-		tel_num = sheet['C5'].value
-		tel_num = re.sub(r'\D', '', tel_num)
-		tel_num_sec = sheet['D5'].value
-		email = sheet['E5'].value
-		if email is not None:
-			email = email.strip().replace("Mail: ", "")
+	def extract_contact_information(self, sheet, params):
+		tel_num_cell = params.get("tel_num")
+		tel_num = sheet[tel_num_cell].value
+		if tel_num:
+			tel_num = re.sub(r'\D', '', tel_num)
+		tel_num_sec_cell = params.get("tel_num_sec")
+		tel_num_sec = sheet[tel_num_sec_cell].value
+		email_cell = params.get("email")
+		email = sheet[email_cell].value.strip().replace("Mail: ", "") if sheet[email_cell].value else None
 		data_contact = [tel_num, email]
 		
-		verification_result = self.verify_value(data_contact)
-		if not verification_result:
-			data_contact = [tel_num_sec, email]
-			verification_result = self.verify_value(data_contact)
-			if verification_result:
-				tel_num = tel_num_sec
+		if not self.verify_value(data_contact):
+			if tel_num_sec:
+				tel_num_sec = re.sub(r'\D', '', tel_num_sec)
+				data_contact = [tel_num_sec, email]
+			if self.verify_value(data_contact):
+				tel_num = data_contact[0]
 		
-		tel_num = re.sub(r'\D', '', tel_num)
-		tel_num = ' '.join([tel_num[i:i + 2] for i in range(0, len(tel_num), 2)])
-		
+		if tel_num:
+			tel_num = ' '.join([tel_num[i:i + 2] for i in range(0, len(tel_num), 2)])
 		return tel_num, email
 	
-	def extract_interview_information(self, sheet):
+	def extract_interview_information(self, sheet, params):
 		dates = []
 		managers = []
-		for row in range(7, 10):
-			date_value = sheet.cell(row=row, column=8).value
-			date_value = self.verify_format_date(date_value)
-			if date_value is not None:
+		start_row = params.get("interview_dates_start")
+		end_row = params.get("interview_dates_end")
+		for row in range(start_row, end_row + 1):
+			date_cell = sheet.cell(row=row, column=8).value
+			date_value = self.verify_format_date(date_cell)
+			if date_value:
 				date_value = self.format_date(date_value)
-			#	date_value = self.change_date_randomly(date_value)
 			dates.append(date_value)
 		
-		for row in range(7, 10):
-			manager_value = sheet.cell(row=row, column=7).value
-			managers.append(manager_value if manager_value is not None else "")
-
-			
-			last_interview = self.find_last_interview(dates)
-			print(last_interview)
-			
+		start_row = params.get("interview_managers_start")
+		end_row = params.get("interview_managers_end")
+		for row in range(start_row, end_row + 1):
+			manager_cell = sheet.cell(row=row, column=7).value
+			managers.append(manager_cell if manager_cell else "")
 		
+		last_interview = self.find_last_interview(dates)
 		return dates, managers, last_interview
 	
 	def extract_information_from_excel(self, file_path, regex):
 		wb = load_workbook(file_path)
 		sheet = wb.active
 		
-		tel_num, email = self.extract_contact_information(sheet)
-		dates, managers, last_interview = self.extract_interview_information(sheet)
+		tel_num, email = self.extract_contact_information(sheet, self.params)
+		dates, managers, last_interview = self.extract_interview_information(sheet, self.params)
 		
-		profile = regex[0] if len(regex) > 0 else ''
-		direction = file_path
-		last_name = sheet['B6'].value
-		first_name = sheet['B9'].value
-		status = sheet['G22'].value
-		if status is None:
-			status = sheet['G23'].value
-		
+		profile = regex[0] if regex else ''
 		information_perso = {
 			'profile': profile,
-			'direction': direction,
-			'last_name': last_name,
-			'first_name': first_name,
+			'direction': file_path,
+			'last_name': sheet[self.params["last_name"]].value,
+			'first_name': sheet[self.params["first_name"]].value,
 			'tel_num': tel_num,
 			'email': email,
-			'status': status,
+			'status': sheet[self.params["status1"]].value or sheet[self.params["status2"]].value,
 			'dates': dates,
 			'managers': managers,
 			'last_interview': last_interview
@@ -134,11 +169,9 @@ class ExcelOperations:
 		return information_perso
 	
 	def create_headers(self):
-		headers = ["repartoire", "profil", "nom", "prenom", "tel", "email", "disponibilite"]
-		for i in range(3):
-			headers += [f"Date{i + 1}", f"Entretien{i + 1}"]
-		headers.append("dernier entretien")
-		return [header.upper() for header in headers]
+		headers = ["REPARTOIRE", "PROFIL", "NOM", "PRENOM", "TEL", "EMAIL", "DISPONIBILITE"] + \
+		          [f"DATE{i + 1}" for i in range(3)] + [f"ENTRETIEN{i + 1}" for i in range(3)] + ["DERNIER ENTRETIEN"]
+		return headers
 	
 	def create_new_excel_file(self, information, output_path):
 		if not information:
@@ -153,107 +186,83 @@ class ExcelOperations:
 		
 		for info in information:
 			row = [
-				info['direction'], info['profile'],
-				info['last_name'], info['first_name'],
-				info['tel_num'], info['email'],
-				info['status'],
-			]
-			
-			for interview in info['interviews']:
-				row += [interview['date'], interview['manager']]
-			row.append(info['last_interview'])
+				      info['direction'], info['profile'],
+				      info['last_name'], info['first_name'],
+				      info['tel_num'], info['email'],
+				      info['status'],
+			      ] + [item for sublist in info['interviews'] for item in sublist.values()] + [info['last_interview']]
 			sheet.append(row)
-			
 		
-		# column style adjustment
 		for column in sheet.columns:
-			max_length = 0
-			column = [cell for cell in column]
-			for cell in column:
-				try:
-					if len(str(cell.value)) > max_length:
-						max_length = len(cell.value)
-				except:
-					pass
-			adjusted_width = (max_length + 2)
+			max_length = max((len(str(cell.value)) for cell in column if cell.value), default=0)
+			adjusted_width = max_length + 3
 			sheet.column_dimensions[column[0].column_letter].width = adjusted_width
-			repartoire_index = headers.index("REPARTOIRE")
-			sheet.column_dimensions[chr(65 + repartoire_index)].width = 15
-		wb.save(output_path)
 		
+		sheet.column_dimensions['A'].width = 20
+		
+		wb.save(output_path)
 		return True
-	
 	
 	def extract_path_profile(self, path):
 		infos = []
-		techno = re.search(r'- (.+)', path)
-		path_file_of_user = re.search(r'(.+)\\', path)
-		if techno:
-			infos.append(techno.group(1))
+		
+		techno_match = re.search(r' - (.+)$', path)
+		if techno_match:
+			path_normalized = path.replace('\\', '/')
+			profile_info = path_normalized[path_normalized.rfind('/') + 1:]
+		
+			infos.append(profile_info)
+			
+
+		path_file_of_user = re.search(r'^([A-Za-z]:/.*?/)', path.replace('\\', '/'))
 		if path_file_of_user:
 			infos.append(path_file_of_user.group(1))
 		
 		return infos
 	
-	
 	def verify_value(self, data):
 		tel_num, email = data
-		if tel_num is not None and email is not None:
+		if tel_num and email:
 			tel_num = re.sub(r'\D', '', tel_num)
 			return self.verify_phone_number(tel_num) and self.verify_email(email)
-		else:
-			return False
-	
+		return False
 	
 	@staticmethod
 	def verify_phone_number(phone_number):
 		return bool(re.fullmatch(r"0\d{9}", phone_number))
 	
-	
 	@staticmethod
 	def verify_email(email):
 		return bool(re.fullmatch(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+", email))
 	
-	
 	def verify_format_file_excel(self, file_path):
 		wb = load_workbook(file_path)
 		sheet = wb.active
-		title = "DOSSIER RECRUTEMENT FICHE ENTRETIEN"
-		if sheet['C3'].value != title:
-			return False
-		return True
-	
+		return sheet['C3'].value == "DOSSIER RECRUTEMENT FICHE ENTRETIEN"
 	
 	def verify_format_date(self, date):
 		if isinstance(date, datetime):
 			return date.strftime('%d/%m/%Y')
 		if isinstance(date, str) and re.match(r'\d{1,2}/\d{1,2}/\d{2,4}', date):
 			return date
-		if date == '___/___/__':
-			return None
 		return None
 	
-	
 	def format_date(self, date_string):
-		# 'dd/mm/yyyy' -> 'dd/mm/yy'
+		if not date_string:
+			return None
 		try:
 			date_object = datetime.strptime(date_string, '%d/%m/%Y')
 		except ValueError:
-			# 'dd/mm/yy' -> 'dd/mm/yy'
 			date_object = datetime.strptime(date_string, '%d/%m/%y')
-		
-		# 'dd/mm/yy' -> 'dd/mm/yy'
-		formatted_date = date_object.strftime('%d/%m/%y')
-		
-		return formatted_date
+		return date_object.strftime('%d/%m/%y')
 	
 	def find_last_interview(self, dates):
-		for date in dates:
-			if date is not None:
-				valid_dates = [datetime.strptime(date, "%d/%m/%y") for date in dates if date is not None]
-				if valid_dates:
-					most_recent_date = max(valid_dates)
-					most_recent_date = most_recent_date.strftime("%d/%m/%y")
-					return most_recent_date
-				else:
-					return None
+		valid_dates = [datetime.strptime(date, "%d/%m/%y") for date in dates if date]
+		return max(valid_dates).strftime("%d/%m/%y") if valid_dates else None
+	
+	def is_file_open(self, file_path):
+		try:
+			os.rename(file_path, file_path)
+			return False
+		except OSError:
+			return True
