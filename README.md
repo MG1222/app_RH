@@ -30,8 +30,8 @@ Ensure that the CVs are formatted according to the `demo-fichier_entretien.xlsx`
 - pip for installing dependencies
 
 ### Steps
-1. Clone the repository to your local machine: `git clone https://github.com/yourusername/relance-rh.git`
-2. Navigate to the cloned directory: `cd relance-rh`
+1. Clone the repository to your local machine: `git clone https://github.com/MG1222/app_RH.git`
+2. Navigate to the cloned directory: `cd app_RH`
 
 ### Setting Up a Virtual Environment
 
@@ -50,5 +50,7 @@ After forking the repository, it's recommended to set up a virtual environment f
 4. **Install dependencies**:
    - With the virtual environment activated, install the project dependencies by running `pip install -r requirements.txt`.
 
+## Ongoing Development
 
+We are currently implementing the feature to allow users to customize the cell locations from which candidate information is extracted. This enhancement aims to provide greater flexibility in handling various CV formats and ensuring that our application can adapt to different document structures efficiently.
 
