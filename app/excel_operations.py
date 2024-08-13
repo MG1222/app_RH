@@ -17,6 +17,9 @@ class ExcelOperations:
 		self.params = self.load_params()
 
 	def load_params(self):
+		"""
+		This function loads the parameters from the JSON file.
+		"""
 		try:
 			with open("./config/setting_excel.json", 'r') as f:
 				return json.load(f)
@@ -25,6 +28,11 @@ class ExcelOperations:
 			return None
 
 	def process_excel_files(self, folder_path, progress_bar=None):
+		"""
+		This function processes all Excel files in the given folder path and extracts information from them.
+		folder_path: path to the folder containing Excel files to process
+		progress_bar: tkinter progress bar to update progress
+		"""
 		information = []
 		excel_files = self.get_excel_files(folder_path)
 		total_files = len(excel_files)
@@ -72,6 +80,10 @@ class ExcelOperations:
 		return information
 
 	def get_excel_files(self, folder_path):
+		"""
+		This function returns a list of Excel files in the given folder path.
+		folder_path: path to the folder containing Excel files
+		"""
 		excel_files = []
 		with concurrent.futures.ThreadPoolExecutor() as executor:
 			futures = []
@@ -89,6 +101,11 @@ class ExcelOperations:
 		return excel_files
 
 	def check_file(self, file_path, root):
+		"""
+		This function checks if the given file is an Excel file, if the format is correct and if it is open,
+		file_path: path to the file to check
+		root: root directory of the file
+		"""
 		if not os.path.exists(file_path):
 			return None
 		try:
@@ -111,6 +128,11 @@ class ExcelOperations:
 		return None
 
 	def extract_contact_information(self, sheet, params):
+		"""
+		This function extracts contact information from the given Excel sheet.
+		sheet: Excel sheet to extract information from
+		params: dictionary containing cell references for contact information
+		"""
 		tel_num_cell = params.get("tel_num")
 		tel_num = sheet[tel_num_cell].value
 		if tel_num:
@@ -138,6 +160,11 @@ class ExcelOperations:
 		return int(re.findall(r'\d+', cell_ref)[0])
 
 	def extract_interview_information(self, sheet, params):
+		"""
+		This function extracts interview information from the given Excel sheet.
+		sheet: Excel sheet to extract information from
+		params: dictionary containing cell references for interview information
+		"""
 		dates = []
 		managers = []
 
@@ -168,7 +195,13 @@ class ExcelOperations:
 
 		last_interview = self.find_last_interview(dates)
 		return dates, managers, last_interview
+
 	def extract_information_from_excel(self, file_path, regex):
+		"""
+		This function extracts information from the given Excel file.
+		file_path: path to the Excel file to extract information from
+		regex: regex pattern to extract profile information from the file path
+		"""
 		wb = load_workbook(file_path)
 		sheet = wb.active
 
@@ -190,10 +223,22 @@ class ExcelOperations:
 		}
 
 	def create_headers(self):
-		return ["REPARTOIRE", "PROFIL", "NOM", "PRENOM", "TEL", "EMAIL", "DISPONIBILITE"] + \
-			[f"DATE{i + 1}" for i in range(3)] + [f"ENTRETIEN{i + 1}" for i in range(3)] + ["DERNIER ENTRETIEN"]
+		"""
+		This function creates headers for the new Excel file.
+		"""
+		headers = ["REPARTOIRE", "PROFIL", "NOM", "PRENOM", "TEL", "EMAIL", "DISPONIBILITE"]
+		for i in range(3):
+			headers.append(f"DATE {i + 1}")
+			headers.append(f"ENTRETIEN {i + 1}")
+		headers.append("DERNIER ENTRETIEN")
+		return headers
 
 	def create_new_excel_file(self, information, output_path):
+		"""
+		This function creates a new Excel file with the given information.
+		information: list of dictionaries containing information to write to the new Excel file
+		output_path: path to the new Excel file
+		"""
 		if not information:
 			raise ValueError("No information to write, file would be empty except headers")
 
@@ -206,11 +251,18 @@ class ExcelOperations:
 
 		for info in information:
 			row = [
-				      info['direction'], info['profile'],
-				      info['last_name'], info['first_name'],
-				      info['tel_num'], info['email'],
-				      info['status'],
-			      ] + [item for sublist in info['interviews'] for item in sublist.values()] + [info['last_interview']]
+				info['direction'], info['profile'],
+				info['last_name'], info['first_name'],
+				info['tel_num'], info['email'],
+				info['status'],
+			]
+
+			# Interleave dates and managers
+			interleaved = []
+			for date, manager in zip(info['dates'], info['managers']):
+				interleaved.extend([date, manager])
+			row.extend(interleaved)
+			row.append(info['last_interview'])
 			sheet.append(row)
 
 		for column in sheet.columns:
@@ -224,6 +276,10 @@ class ExcelOperations:
 		return True
 
 	def extract_path_profile(self, path):
+		"""
+		This function extracts the path and profile information from the given path.
+		path: path to extract information from
+		"""
 		infos = []
 
 		techno_match = re.search(r' - (.+)$', path)
@@ -241,6 +297,9 @@ class ExcelOperations:
 		return infos
 
 	def verify_value(self, data):
+		"""
+		This function verifies if the given data (tel number and email ) is valid.
+		"""
 		tel_num, email = data
 		if tel_num and email:
 			tel_num = re.sub(r'\D', '', tel_num)

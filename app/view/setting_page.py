@@ -15,6 +15,7 @@ class SettingPage(Frame):
         self.create_widgets()
 
     def load_params_from_json(self):
+        """Load the parameters from the json file"""
         try:
             with open('./config/setting_excel.json', 'r') as file:
                 param_json = json.load(file)
@@ -22,7 +23,11 @@ class SettingPage(Frame):
             messagebox.showerror("Erreur", "Le fichier de configuration n'a pas été trouvé.")
             param_json = {}
         return param_json
+
     def create_widgets(self):
+        """
+        Create the widgets for the setting page
+        """
         frame = ttk.Frame(self)
         frame.grid(padx=20, pady=20)
         ttk.Label(frame, text="Paramètres des cellules Excel").grid(row=0, column=0, columnspan=4, pady=10)
@@ -61,6 +66,7 @@ class SettingPage(Frame):
         back_button.config(style="TButton")
         style.configure("W.TButton", foreground="green")
         save_button.config(style="W.TButton")
+
     def save_params_to_json(self):
         param_json = {
             "last_name": self.params["last_name"],
@@ -82,6 +88,7 @@ class SettingPage(Frame):
         except Exception as e:
             logging.error(f"Error while saving params to json: {e}")
             return False
+
     def get_french_label(self, param):
         labels = {
             "last_name": "Nom de famille",
