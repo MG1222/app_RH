@@ -12,14 +12,13 @@ from app.excel_operations import ExcelOperations
 
 
 def resource_path(relative_path):
+	"""Get absolute path to resource, works for dev and for PyInstaller"""
 	try:
 		base_path = sys._MEIPASS
 	except AttributeError:
 		base_path = os.path.dirname(os.path.abspath(__file__))
 
 	return os.path.join(base_path, relative_path)
-
-
 
 class HomePage(Frame):
 	def __init__(self, parent, controller, *args, **kwargs):
@@ -35,6 +34,9 @@ class HomePage(Frame):
 		self.controller.title("Relance RH")
 	
 	def create_widgets(self):
+		"""
+		Create the widgets for the home page
+		"""
 		# Create a frame for the tree view and other elements
 		main_frame = Frame(self)
 		main_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
@@ -46,7 +48,6 @@ class HomePage(Frame):
 		logos_frame.grid(row=0, column=0, pady=(0, 20), sticky="n")
 		
 		# Load logos
-
 		# logo .exe env
 		# logo = Image.open(resource_path("app/asset/logoGT.jpg"))
 
@@ -58,8 +59,6 @@ class HomePage(Frame):
 		logo_label = ttk.Label(logos_frame, image=logo)
 		logo_label.image = logo
 		logo_label.grid(row=0, column=0, padx=20)
-
-		
 		# Add description and version
 		description = ttk.Label(main_frame,
 		                        text="Mini app d'enregistrement et creation de fichier Excel avec les "
@@ -85,9 +84,6 @@ class HomePage(Frame):
 		settings_button = ttk.Button(buttons_frame, text="Paramètres", command=lambda: self.controller.show_frame(
 			"SettingPage"))
 		settings_button.grid(row=0, column=1, padx=10)
-		
-
-		
 		# Create a frame for the progress bar
 		self.progress_frame = Frame(self)
 		self.progress_frame.grid(row=1, column=0, sticky="ew", padx=20, pady=10)
@@ -98,6 +94,10 @@ class HomePage(Frame):
 		self.progress.grid_remove()
 	
 	def select_folder(self):
+		"""
+		This function is called when the user clicks on the "Chercher" button.
+		It opens a file dialog to select a folder.
+		"""
 		self.folder = fd.askdirectory()
 		if self.folder:
 			logging.info("Folder selected")
@@ -113,6 +113,11 @@ class HomePage(Frame):
 		threading.Thread(target=self.process_files).start()
 	
 	def process_files(self):
+		"""
+		This function is called when the user selects a folder.
+		It processes the Excel files in the folder and displays a message box when the process is complete or
+		when no files are found.
+		"""
 		instance_exelOpr = ExcelOperations()
 		data = instance_exelOpr.process_excel_files(self.folder, self.progress)
 		if data is None:
@@ -128,6 +133,10 @@ class HomePage(Frame):
 		self.progress.grid_remove()
 	
 	def prompt_save(self, data):
+		"""
+		This function is called when the processing of the Excel files is complete.
+		It prompts the user to save the data to an Excel file.
+		"""
 		file_path = self.save_widget(data)
 		if file_path:
 			open_file_response = messagebox.askquestion("Sauvegarde terminée",
@@ -136,6 +145,10 @@ class HomePage(Frame):
 				self.open_file(file_path)
 	
 	def save_widget(self, data):
+		"""
+		This function is called when the user clicks on the "Sauvegarder" button.
+		It opens a file dialog to save the data to an Excel file.
+		"""
 		today = date.today().strftime("%m-%y")
 		file_path = fd.asksaveasfilename(defaultextension=".xlsx", initialfile=f'relance-{today}')
 		
@@ -156,6 +169,9 @@ class HomePage(Frame):
 			return None
 	
 	def open_file(self, file_path):
+		"""
+		This function is called when the user clicks on the "Ouvrir" button.
+		"""
 		logging.debug(f"open_file called with file_path: {file_path}")
 		try:
 			if sys.platform == "win32":
